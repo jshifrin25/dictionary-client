@@ -4,18 +4,39 @@
     const rl = readline.createInterface({
         input: process.stdin
         , output: process.stdout
-        , prompt: '|{'
+        , prompt: ' |{'
     });
     let dictClient = require('./dict-client/main');
     rl.on('line', (line) => {
         if (line.trim().toUpperCase().startsWith('SHOW')) {
-            dictClient.show('DB');
+            let args = getArgs(line);
+            dictClient.show(args[1].toUpperCase());
             rl.prompt();
-        }else if (line.trim().toUpperCase().startsWith('D')) {
-             let args = getArgs(line);
-             dictClient.define(args[1], args[2]);
-	     rl.prompt();
-	} else if (/^[Qq][uU]?[iI]?[tT]?/.test(line.trim())) {
+        }
+        else if (line.trim().toUpperCase().startsWith('D')) {
+            let args = getArgs(line);
+            if (args.length === 2) {
+                dictClient.define(null, args[1]);
+            }
+            else {
+                dictClient.define(args[1], args[2]);
+            }
+            rl.prompt();
+        }
+        else if (line.trim().toUpperCase().startsWith('M')) {
+            let args = getArgs(line);
+            if (args.length === 2) {
+                dictClient.match(null, null, args[1]);
+            }
+            else if (args.length === 3) {
+                dictClient.match(null, args[1], args[2]);
+            }
+            else {
+                dictClient.match(args[1], args[2], args[3]);
+            }
+            rl.prompt();
+        }
+        else if (/^[Qq][uU]?[iI]?[tT]?/.test(line.trim())) {
             dictClient.quit();
             rl.close();
         }
@@ -31,6 +52,6 @@
     function getArgs(line) {
         let args = line.split(" ");
         console.log(args);
-	return args;
+        return args;
     }
 }());

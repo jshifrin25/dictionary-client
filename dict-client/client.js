@@ -11,7 +11,6 @@
             inst.client.on('data', api.responseHandler);
         }
     };
-    
     module.exports = () => {
         let comms = require('./dictCommands')();
         let clientObj = {
@@ -34,6 +33,10 @@
             }
             , show: (obj) => {
                 let msg = comms.SHOW.execute(obj);
+                clientObj.client.write(msg);
+            }
+            , match: (db, strat, word) => {
+                let msg = comms.MATCH.execute(db, strat, word);
                 clientObj.client.write(msg);
             }
             , quit: () => {
